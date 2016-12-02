@@ -2,7 +2,7 @@
   "name": "passport-pnut",
   "version": "0.1.1",
   "description": "pnut.io authentication strategy for Passport.",
-  "author": "Michael Owens <mk@mowens.com> (http://mowens.com/)",
+  "author": "Robert <ing@codespelunkers.com>",
   "repository": {
     "type": "git",
     "url": "http://github.com/33mhz/passport-pnut.git"
