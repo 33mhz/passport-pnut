@@ -1,28 +1,28 @@
 # Passport-AppDotNet
 
 [Passport](https://github.com/jaredhanson/passport) strategy for authenticating
-with [App.net](https://alpha.app.net) using the OAuth 2.0 API.
+with [pnut.io](https://pnut.io) using the OAuth 2.0 API.
 
 ## Installation
 
-    $ npm install passport-appdotnet
+    $ npm install passport-pnut
 
 ## Usage
 
 #### Configure Strategy
 
-The App.net authentication strategy authenticates users using a App.net account and
+The pnut.io authentication strategy authenticates users using a pnut.io account and
 OAuth tokens.  The strategy requires a `verify` callback, which accepts these
 credentials and calls `done` providing a user, as well as `options` specifying a
 consumer key, consumer secret, and callback URL.
 
-    passport.use(new AppDotNetStrategy({
-        consumerKey: APPDOTNET_CONSUMER_KEY,
-        consumerSecret: APPDOTNET_CONSUMER_SECRET,
-        callbackURL: "http://127.0.0.1:3000/auth/appdotnet/callback"
+    passport.use(new PnutStrategy({
+        consumerKey: PNUT_CONSUMER_KEY,
+        consumerSecret: PNUT_CONSUMER_SECRET,
+        callbackURL: "http://127.0.0.1:3000/auth/pnut/callback"
       },
       function(token, tokenSecret, profile, done) {
-        User.findOrCreate({ appdotnetId: profile.id }, function (err, user) {
+        User.findOrCreate({ pnutId: profile.id }, function (err, user) {
           return done(err, user);
         });
       }
@@ -30,21 +30,21 @@ consumer key, consumer secret, and callback URL.
 
 #### Authenticate Requests
 
-Use `passport.authenticate()`, specifying the `'appdotnet'` strategy, to
+Use `passport.authenticate()`, specifying the `'pnut'` strategy, to
 authenticate requests.
 
 For example, as route middleware in an [Express](http://expressjs.com/)
 application:
 
-    app.get('/auth/appdotnet',
-      passport.authenticate('appdotnet'),
+    app.get('/auth/pnut',
+      passport.authenticate('pnut'),
       function(req, res){
-        // The request will be redirected to App.net for authentication, so this
+        // The request will be redirected to pnut.io for authentication, so this
         // function will not be called.
       });
 
-    app.get('/auth/appdotnet/callback',
-      passport.authenticate('appdotnet', { failureRedirect: '/login' }),
+    app.get('/auth/pnut/callback',
+      passport.authenticate('pnut', { failureRedirect: '/login' }),
       function(req, res) {
         // Successful authentication, redirect home.
         res.redirect('/');
