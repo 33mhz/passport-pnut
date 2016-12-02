@@ -1,4 +1,4 @@
-# Passport-AppDotNet
+# Passport-Pnut
 
 [Passport](https://github.com/jaredhanson/passport) strategy for authenticating
 with [pnut.io](https://pnut.io) using the OAuth 2.0 API.
