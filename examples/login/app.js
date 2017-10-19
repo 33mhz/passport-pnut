@@ -1,10 +1,14 @@
 var express = require('express')
   , passport = require('passport')
   , util = require('util')
-  , AppDotNetStrategy = require('passport-appdotnet').Strategy;
+  , morgan = require('morgan')
+  , session = require('express-session')
+  , cookieParser = require('cookie-parser')
+  , bodyParser = require('body-parser')
+  , PnutStrategy = require('passport-pnut').Strategy;
 
-var APPDOTNET_APP_ID = "--insert-appdotnet-app-id-here--"
-var APPDOTNET_APP_SECRET = "--insert-appdotnet-app-secret-here--";
+var PNUT_CLIENT_ID = '-- your pnut client id here --'
+var PNUT_CLIENT_SECRET = '-- your pnut secret here';
 
 
 // Passport session setup.
@@ -23,19 +27,19 @@ passport.deserializeUser(function(obj, done) {
 });
 
 
-// Use the AppDotNetStrategy within Passport.
+// Use the PnutStrategy within Passport.
 //   Strategies in Passport require a `verify` function, which accept
-//   credentials (in this case, an accessToken, refreshToken, and AppDotNet
+//   credentials (in this case, an accessToken, refreshToken, and pnut.io
 //   profile), and invoke a callback with a user object.
-passport.use(new AppDotNetStrategy({
-    clientID: APPDOTNET_APP_ID,
-    clientSecret: APPDOTNET_APP_SECRET,
-    callbackURL: "http://localhost:3000/auth/appdotnet/callback"
+passport.use(new PnutStrategy({
+    clientID: PNUT_CLIENT_ID,
+    clientSecret: PNUT_CLIENT_SECRET,
+    callbackURL: "http://localhost:3000/auth/pnut/callback"
   },
   function(accessToken, refreshToken, profile, done) {
     // asynchronous verification, for effect...
     process.nextTick(function () {
-      
+
       // To keep the example simple, the user's App.net profile is returned to
       // represent the logged-in user.  In a typical application, you would want
       // to associate the App.net account with a user record in your database,
@@ -48,24 +52,21 @@ passport.use(new AppDotNetStrategy({
 
 
 
-var app = express.createServer();
+var app = express();
 
 // configure Express
-app.configure(function() {
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'ejs');
-  app.use(express.logger());
-  app.use(express.cookieParser());
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(express.session({ secret: 'congrats daltonc' }));
-  // Initialize Passport!  Also use passport.session() middleware, to support
-  // persistent login sessions (recommended).
-  app.use(passport.initialize());
-  app.use(passport.session());
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
-});
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+app.use(morgan('combined'));
+app.use(cookieParser('CHANGE_MY_SECRET'));
+app.use(bodyParser.json({ limit: '1mb' }));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(session({ secret: 'congrats 33MHz', resave: false, saveUninitialized: false }));
+// Initialize Passport!  Also use passport.session() middleware, to support
+// persistent login sessions (recommended).
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(express.static(__dirname + '/public'));
 
 
 app.get('/', function(req, res){
@@ -80,25 +81,25 @@ app.get('/login', function(req, res){
   res.render('login', { user: req.user });
 });
 
-// GET /auth/appdotnet
+// GET /auth/pnut
 //   Use passport.authenticate() as route middleware to authenticate the
 //   request.  The first step in App.net authentication will involve
 //   redirecting the user to facebook.com.  After authorization, App.net will
-//   redirect the user back to this application at /auth/appdotnet/callback
-app.get('/auth/appdotnet',
-  passport.authenticate('appdotnet'),
+//   redirect the user back to this application at /auth/pnut/callback
+app.get('/auth/pnut',
+  passport.authenticate('pnut', { scope: ['basic'] }),
   function(req, res){
-    // The request will be redirected to App.net for authentication, so this
+    // The request will be redirected to pnut.io for authentication, so this
     // function will not be called.
   });
 
-// GET /auth/appdotnet/callback
+// GET /auth/pnut/callback
 //   Use passport.authenticate() as route middleware to authenticate the
 //   request.  If authentication fails, the user will be redirected back to the
 //   login page.  Otherwise, the primary route function function will be called,
 //   which, in this example, will redirect the user to the home page.
-app.get('/auth/appdotnet/callback', 
-  passport.authenticate('appdotnet', { failureRedirect: '/login' }),
+app.get('/auth/pnut/callback',
+  passport.authenticate('pnut', { failureRedirect: '/login' }),
   function(req, res) {
     res.redirect('/');
   });
