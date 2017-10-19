@@ -9,7 +9,7 @@
   },
   "main": "./lib/passport-pnut",
   "dependencies": {
-    "passport-oauth": ">= 0.1.0"
+    "passport-oauth": "^1.0.0"
   },
   "engines": { "node": ">= 0.4.0" },
   "keywords": ["passport", "pnut", "pnutio", "pnut.io", "oauth", "auth", "authn", "authentication", "identity"]
