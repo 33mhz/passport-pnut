@@ -1,6 +1,6 @@
 {
   "name": "passport-pnut",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "pnut.io authentication strategy for Passport.",
   "author": "Robert <ing@codespelunkers.com>",
   "repository": {
